@@ -18,6 +18,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
+////////GUI
+        GUI.mainMenu();
+
 ////////Connection to DB
         Random rand = new Random();
         DB_API.conn2DB();
