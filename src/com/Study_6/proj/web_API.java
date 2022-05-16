@@ -11,8 +11,10 @@ public class web_API {
     /*messyMethod
     *TODO
     * 1)Delay method to use while pooling website "delay"
+    * 2)Querry for humidity
+    * 3)Querry for preasure
      */
-    public static void messyMethod() {
+    public static String messyMethod() {
         //Instantiating the URL class
         URL url = null;
         try {
@@ -26,7 +28,9 @@ public class web_API {
         //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         //LocalDateTime nowdate = LocalDateTime.now();
         dat = LocalDateTime.now().toString();
-        System.out.println("Hello: "+ dat);
+        ///////
+        //System.out.println("Hello: "+ dat);
+        //////
 
         while (true) {
             if (dat != LocalDateTime.now().toString()) {
@@ -52,11 +56,11 @@ public class web_API {
                 //Format of return data: Sucho,BezchmurnieTemperatura:22.6&deg;C
                 result = result.substring(result.indexOf(":") + 1, result.indexOf("deg;C") - 1);
                 //Format of return data: 22.6
-                System.out.println("Contents of the web page: " + result+"\nAt time: "+ LocalDateTime.now().toString());
-
-
+                ///////
+                //System.out.println("Contents of the web page: " + result+"\nAt time: "+ LocalDateTime.now().toString());
+                //////
                 web_API.delay(10000);
-
+                return result;
             }
         }
     }
