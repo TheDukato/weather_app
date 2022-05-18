@@ -26,14 +26,6 @@ public class GUI {
          */
         JPanel topMenu = new JPanel();
 
-        JButton refresh = new JButton("Refresh");
-        refresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-
         JLabel CurrPeriod = new JLabel("0min");
 
         String[] timeRef = {"1min","5min","15min"};
@@ -81,23 +73,6 @@ public class GUI {
             }
         };*/
 
-        JButton prev = new JButton("Previous plot");
-        prev.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                CardLayout cl = (CardLayout) plots.getLayout();
-                if (e.getActionCommand().equals("Previous plot")) cl.previous(plots);
-            }
-        });
-        JButton next = new JButton("Next plot");
-        next.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                CardLayout cl = (CardLayout) plots.getLayout();
-                if (e.getActionCommand().equals("Next plot")) cl.next(plots);
-            }
-        });
-
         JPanel temp = new JPanel();
         temp.setBackground(Color.blue);
 
@@ -109,17 +84,44 @@ public class GUI {
 
         plots_2D temperature = new plots_2D();
         DB_API.conn2DB();
-        temperature.mes = DB_API.selectQuerry("temperature_1");
+        //temperature.mes = DB_API.selectQuerry("temperature_1");
+
+        JButton prev = new JButton("Previous plot");
+        prev.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                CardLayout cl = (CardLayout) plots.getLayout();
+                if (e.getActionCommand().equals("Previous plot")) cl.previous(plots);
+            }
+        });
+
+        JButton next = new JButton("Next plot");
+        next.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                CardLayout cl = (CardLayout) plots.getLayout();
+                if (e.getActionCommand().equals("Next plot")) cl.next(plots);
+            }
+        });
+
+        JButton refresh = new JButton("Refresh");
+        refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                temperature.mes = DB_API.selectQuerry("temperature_1");
+                plots.add(temperature);
+            }
+        });
 
         jf.add(topMenu);
-        topMenu.add(refresh);
+        //topMenu.add(refresh);
         topMenu.add(jlist);
         topMenu.add(CurrPeriod);
         jf.add(control);
         control.add(prev,BorderLayout.WEST);
         control.add(plots, BorderLayout.CENTER);
         control.add(next,BorderLayout.EAST);
-        plots.add(temperature);
+        control.add(refresh,BorderLayout.SOUTH);
         plots.add(humidity);
         plots.add(preasure);
         plots.add(temp);

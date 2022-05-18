@@ -6,7 +6,7 @@ import java.util.List;
 
 public class DB_API {
 
-    public static final String DRIVER = "org.sqlite.JDBC";
+    private static final String DRIVER = "org.sqlite.JDBC";
     public static String DB_URL = "jdbc:sqlite:historian.db";
 
     private static Connection conn;
@@ -15,6 +15,7 @@ public class DB_API {
     /*conn2DB
     * TODO:
     *  1) Passing argument DB_URL that is path to DB
+    *  2)Reading querry from file and passing value to querry
      */
     public static boolean conn2DB() {
 
@@ -36,13 +37,13 @@ public class DB_API {
         return true;
     }
     /****SQLQuerry
-     * Initial new historian structures
-     * TODO
-     *  1)Reading querry from file and passing value to querry
+     *
+     *
+     *
      */
 
     /*createQuerry
-    * Querry that try to create table
+    * Querry that initial new historian structures
      */
     static boolean createQuerry(String target) {
         String querry =
