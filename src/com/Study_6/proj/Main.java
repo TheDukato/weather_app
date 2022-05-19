@@ -45,12 +45,13 @@ public class Main {
 ////////plots_2D
 
 /////////thread
+/*        Program obj = new Program();
+        Thread thred = new Thread();*/
+
         thread myThread1 = new thread();
         thread myThread2 = new thread();
 
-
-        myThread2.runGUI();
-
         myThread1.insert2DB_from_web("temperature_1");
+        myThread2.runGUI();
     }
 }
