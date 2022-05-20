@@ -1,5 +1,11 @@
 package com.Study_6.proj;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -7,14 +13,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 public class GUI {
-
     static private int period;
 
+    private static Logger log = LogManager.getLogger();
+
     public static void mainMenu() {
-
-
+        Configurator.initialize(new DefaultConfiguration());
+        Configurator.setRootLevel(Level.DEBUG);
 
         JFrame jf = new JFrame("Weather window");
         jf.setLayout(new GridLayout(2,1));
@@ -52,9 +58,6 @@ public class GUI {
                 }
             }
         });
-        /*Main menu
-         *
-         */
 
         JPanel control = new JPanel();
         control.setLayout(new BorderLayout());
@@ -64,6 +67,7 @@ public class GUI {
         /*
         * TODO*********************************
         *  1) one action listener
+        *  2) Add logging
          */
 /*        ActionListener myActionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e){
@@ -76,14 +80,11 @@ public class GUI {
         JPanel temp = new JPanel();
         temp.setBackground(Color.blue);
 
-        JPanel humidity = new JPanel();
-        humidity.setBackground(Color.red);
+        plots_2D humidity = new plots_2D();
 
-        JPanel preasure = new JPanel();
-        preasure.setBackground(Color.yellow);
+        plots_2D preasure = new plots_2D();
 
         plots_2D temperature = new plots_2D();
-        DB_API.conn2DB();
         //temperature.mes = DB_API.selectQuerry("temperature_1");
 
         JButton prev = new JButton("Previous plot");
@@ -92,6 +93,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e){
                 CardLayout cl = (CardLayout) plots.getLayout();
                 if (e.getActionCommand().equals("Previous plot")) cl.previous(plots);
+                log.debug("Prev button clicked");
             }
         });
 
@@ -101,6 +103,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e){
                 CardLayout cl = (CardLayout) plots.getLayout();
                 if (e.getActionCommand().equals("Next plot")) cl.next(plots);
+                log.debug("Next button clicked");
             }
         });
 
@@ -108,13 +111,24 @@ public class GUI {
         refresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                DB_API.conn2DB();
                 temperature.mes = DB_API.selectQuerry("temperature_1");
                 plots.add(temperature);
+                log.debug("Plot temperature successful added");
+
+                humidity.mes = DB_API.selectQuerry("humidity_1");
+                plots.add(humidity);
+                log.debug("Plot humidity successful added");
+                plots.add(humidity);
+
+                preasure.mes = DB_API.selectQuerry("preasure_1");
+                plots.add(preasure);
+                log.debug("Plot preasure successful added");
+                plots.add(preasure);
             }
         });
 
         jf.add(topMenu);
-        //topMenu.add(refresh);
         topMenu.add(jlist);
         topMenu.add(CurrPeriod);
         jf.add(control);
@@ -122,8 +136,6 @@ public class GUI {
         control.add(plots, BorderLayout.CENTER);
         control.add(next,BorderLayout.EAST);
         control.add(refresh,BorderLayout.SOUTH);
-        plots.add(humidity);
-        plots.add(preasure);
         plots.add(temp);
 
         jf.setVisible(true);

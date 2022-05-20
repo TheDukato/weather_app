@@ -1,29 +1,70 @@
 package com.Study_6.proj;
 
-import javax.swing.*;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Vector;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 
 
 public class Main {
-    public static void main(String[] args) {
+    //private static final Logger log = LogManager.getLogger(Main.class);
+    //private static final Logger log = LogManager.getLogger("HelloWorld");
+    //private static final Logger log = LogManager.getLogger();
 
+    private static Logger log = LogManager.getLogger();
+
+    public static void main(String[] args) {
+        Configurator.initialize(new DefaultConfiguration());
+        Configurator.setRootLevel(Level.DEBUG);
+
+
+
+/*        //String str1 = new String("no��:44%&nbsp;Humidex123456");
+        String str1 =new String(":44%Humidex");
+
+        //System.out.println( str1.charAt(str1.indexOf("Humidex") - 3));
+        //System.out.println(str1.charAt(11));
+        if(String.valueOf(str1.charAt(str1.indexOf("Humidex") - 3)).equals("s")){
+            str1 = str1.substring(str1.indexOf("Humidex") - 9, str1.indexOf("Humidex")-7);
+        }else{
+            str1 = str1.substring(str1.indexOf("Humidex") - 3, str1.indexOf("Humidex")-1);
+        }
+        System.out.println(str1);*/
+
+/////////Log4j2
+
+        //System.setProperty("log4j-core","D:\\Kamil\\.Studia\\3rok\\6semestr\\Java\\Project_for_subject_JAVA\\bin\\log4j2.properties");
+        //Logger log = LogManager.getRootLogger();
+
+/*        Logger log = LogManager.getLogger();
+        Configurator.initialize(new DefaultConfiguration());
+        Configurator.setRootLevel(Level.TRACE);
+
+        log.fatal("Hello");
+        log.fatal("fatal Message");
+        log.error("errror message");
+        log.warn("Warning Message");
+        log.info("info Message");
+        log.trace("Trace messega");*/
+
+/////////myThread
+        myThread myMyThread1 = new myThread();
+        myThread myMyThread2 = new myThread();
+        myThread myMyThread3 = new myThread();
+        myThread myMyThreadGUI = new myThread();
+
+        log.debug("Run insertion myThread for table " + "temperature_1");
+        myMyThread1.insert2DB_from_web_temperaure_Thread("temperature_1",10000);
+
+        log.debug("Run insertion myThread for table " + "humidity_1");
+        myMyThread2.insert2DB_from_web_humidity_Thread("humidity_1",10000);
+
+        log.debug("Run insertion myThread for table " + "preasure_1");
+        myMyThread3.insert2DB_from_web_preasure_Thread("preasure_1",10000);
+
+        log.debug("Run GUI myThread");
+        myMyThreadGUI.runGUIThread();
 ////////GUI
         //GUI.mainMenu();
 
@@ -44,14 +85,7 @@ public class Main {
 
 ////////plots_2D
 
-/////////thread
-/*        Program obj = new Program();
-        Thread thred = new Thread();*/
 
-        thread myThread1 = new thread();
-        thread myThread2 = new thread();
 
-        myThread1.insert2DB_from_web("temperature_1");
-        myThread2.runGUI();
     }
 }
