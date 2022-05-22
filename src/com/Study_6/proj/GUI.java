@@ -15,24 +15,52 @@ import java.awt.event.ActionListener;
 
 public class GUI {
     static private int period;
+    static private int width=800;
+    static private int height=300;
 
     private static Logger log = LogManager.getLogger();
 
     public static void mainMenu() {
+        myThread myMyThread1 = new myThread();
+        myThread myMyThread2 = new myThread();
+        myThread myMyThread3 = new myThread();
+
+        log.debug("Run insertion myThread for table " + "temperature_1");
+        myMyThread1.insert2DB_from_web_temperaure_Thread("temperature_1",10000);
+
+        log.debug("Run insertion myThread for table " + "humidity_1");
+        myMyThread2.insert2DB_from_web_humidity_Thread("humidity_1",10000);
+
+/*        log.debug("Run insertion myThread for table " + "preasure_1");
+        myMyThread3.insert2DB_from_web_preasure_Thread("preasure_1",10000);*/
+
         Configurator.initialize(new DefaultConfiguration());
         Configurator.setRootLevel(Level.DEBUG);
 
         JFrame jf = new JFrame("Weather window");
         jf.setLayout(new GridLayout(2,1));
-        jf.setSize(400,300);
+        jf.setSize(width,height);
         jf.setLocationRelativeTo(null);
 
-        /*Top menu
-        *
-         */
-        JPanel topMenu = new JPanel();
+        JPanel plots = new JPanel(new CardLayout());
+        JPanel conteriner4temp = new JPanel();
+        conteriner4temp.setLayout(new BorderLayout());
+        JPanel conteriner4humi = new JPanel();
+        conteriner4humi.setLayout(new BorderLayout());
 
-        JLabel CurrPeriod = new JLabel("0min");
+        //plots.setSize((int) (width*0.75),(int) (height*0.75));
+
+        JPanel topMenu = new JPanel();
+        topMenu.setLayout(new BorderLayout());
+
+        JPanel botMenu = new JPanel();
+        botMenu.setLayout(new BorderLayout());
+
+        JPanel bottomMenu = new JPanel();
+        bottomMenu.setLayout(new BorderLayout());
+        bottomMenu.setSize((int) (width*0.25),(int) (height*0.25));
+
+        JLabel CurrPeriod = new JLabel("Pooling time: 10 seconds");
 
         String[] timeRef = {"1min","5min","15min"};
         JList jlist = new JList(timeRef);
@@ -41,16 +69,43 @@ public class GUI {
                 if (e.getValueIsAdjusting() == false) {
                     switch ((String) jlist.getSelectedValue()){
                         case "1min":
-                            CurrPeriod.setText((String) jlist.getSelectedValue());
-                            period = 1;
+                            CurrPeriod.setText("Pooling time: " + (String) jlist.getSelectedValue());
+
+                            myThread.enable=1;
+                            log.debug("Run insertion myThread for table " + "temperature_1");
+                            myMyThread1.insert2DB_from_web_temperaure_Thread("temperature_1",60000);
+                            log.debug("Run insertion myThread for table " + "humidity_1");
+                            myMyThread2.insert2DB_from_web_humidity_Thread("humidity_1",60000);
+/*                            log.debug("Run insertion myThread for table " + "preasure_1");
+                            myMyThread3.insert2DB_from_web_preasure_Thread("preasure_1",60000);*/
+
+                            log.debug("Setting pooling period on 1 min");
                             break;
                         case "5min":
-                            CurrPeriod.setText((String) jlist.getSelectedValue());
-                            period = 5;
+                            CurrPeriod.setText("Pooling time: " + (String) jlist.getSelectedValue());
+
+                            myThread.enable=1;
+                            log.debug("Run insertion myThread for table " + "temperature_1");
+                            myMyThread1.insert2DB_from_web_temperaure_Thread("temperature_1",300000);
+                            log.debug("Run insertion myThread for table " + "humidity_1");
+                            myMyThread2.insert2DB_from_web_humidity_Thread("humidity_1",300000);
+/*                            log.debug("Run insertion myThread for table " + "preasure_1");
+                            myMyThread3.insert2DB_from_web_preasure_Thread("preasure_1",300000);*/
+
+                            log.debug("Setting pooling period on 5 min");
                             break;
                         case"15min":
-                            CurrPeriod.setText((String) jlist.getSelectedValue());
-                            period = 15;
+                            CurrPeriod.setText("Pooling time: " + (String) jlist.getSelectedValue());
+
+                            myThread.enable=1;
+                            log.debug("Run insertion myThread for table " + "temperature_1");
+                            myMyThread1.insert2DB_from_web_temperaure_Thread("temperature_1",900000);
+                            log.debug("Run insertion myThread for table " + "humidity_1");
+                            myMyThread2.insert2DB_from_web_humidity_Thread("humidity_1",900000);
+/*                            log.debug("Run insertion myThread for table " + "preasure_1");
+                            myMyThread3.insert2DB_from_web_preasure_Thread("preasure_1",900000);*/
+
+                            log.debug("Setting pooling period on 15 min");
                             break;
                         default:
                             break;
@@ -59,33 +114,26 @@ public class GUI {
             }
         });
 
-        JPanel control = new JPanel();
-        control.setLayout(new BorderLayout());
-
-        JPanel plots = new JPanel(new CardLayout());
-
-        /*
-        * TODO*********************************
-        *  1) one action listener
-        *  2) Add logging
-         */
-/*        ActionListener myActionListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                CardLayout cl = (CardLayout) plots.getLayout();
-                if (e.getActionCommand().equals("Previous plot")) cl.previous(plots);
-                else if (e.getActionCommand().equals("Previous plot")) cl.next(plots);
-            }
-        };*/
-
-        JPanel temp = new JPanel();
-        temp.setBackground(Color.blue);
-
         plots_2D humidity = new plots_2D();
 
-        plots_2D preasure = new plots_2D();
-
         plots_2D temperature = new plots_2D();
-        //temperature.mes = DB_API.selectQuerry("temperature_1");
+
+        JLabel temp = new JLabel("Temperatura");
+
+        JLabel humi = new JLabel("Wilgotność");
+
+        DB_API.conn2DB();
+        temperature.mes = DB_API.selectQuerry("temperature_1");
+        conteriner4temp.add(temp,BorderLayout.NORTH);
+        conteriner4temp.add(temperature);
+        plots.add(conteriner4temp);
+        log.debug("Plot temperature successful added");
+
+        humidity.mes = DB_API.selectQuerry("humidity_1");
+        conteriner4humi.add(humi,BorderLayout.NORTH);
+        conteriner4humi.add(humidity);
+        plots.add(conteriner4humi);
+        log.debug("Plot humidity successful added");
 
         JButton prev = new JButton("Previous plot");
         prev.addActionListener(new ActionListener() {
@@ -113,40 +161,31 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 DB_API.conn2DB();
                 temperature.mes = DB_API.selectQuerry("temperature_1");
-                plots.add(temperature);
+                conteriner4temp.add(temp);
+                conteriner4temp.add(temperature);
+                plots.add(conteriner4temp);
                 log.debug("Plot temperature successful added");
 
                 humidity.mes = DB_API.selectQuerry("humidity_1");
-                plots.add(humidity);
+                conteriner4humi.add(humi);
+                conteriner4humi.add(humidity);
+                plots.add(conteriner4humi);
                 log.debug("Plot humidity successful added");
-                plots.add(humidity);
 
-                preasure.mes = DB_API.selectQuerry("preasure_1");
-                plots.add(preasure);
-                log.debug("Plot preasure successful added");
-                plots.add(preasure);
             }
         });
 
-        jf.add(topMenu);
-        topMenu.add(jlist);
-        topMenu.add(CurrPeriod);
-        jf.add(control);
-        control.add(prev,BorderLayout.WEST);
-        control.add(plots, BorderLayout.CENTER);
-        control.add(next,BorderLayout.EAST);
-        control.add(refresh,BorderLayout.SOUTH);
-        plots.add(temp);
+        topMenu.add(jlist,BorderLayout.WEST);
+        topMenu.add(CurrPeriod,BorderLayout.EAST);
+        botMenu.add(prev,BorderLayout.WEST);
+        botMenu.add(next,BorderLayout.EAST);
+        botMenu.add(refresh,BorderLayout.CENTER);
+        bottomMenu.add(botMenu,BorderLayout.SOUTH);
+        bottomMenu.add(topMenu,BorderLayout.NORTH);
+        jf.add(plots,BorderLayout.NORTH);
+        jf.add(bottomMenu,BorderLayout.SOUTH);
 
         jf.setVisible(true);
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
-
-/*class MyActionListener implements ActionListener {
-    public void actionPerformed(ActionEvent e) {
-        CardLayout cl = (CardLayout) plots.getLayout();
-        if (e.getActionCommand().equals("Previous plot")) cl.previous(plots);
-        else if (e.getActionCommand().equals("Previous plot")) cl.next(plots);
-    }
-}*/

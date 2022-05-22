@@ -107,7 +107,7 @@ public class web_API {
         //Searching for temp value
         result = result.substring(result.indexOf("Aktualizacja:&nbsp;") + 50, result.indexOf("hrWilgotno") - 7);
         result = result.substring(result.indexOf(":") + 1, result.indexOf("deg;C") - 1);
-        log.debug("Finded value this -> \""+result+ "\" on page");
+        log.debug("Finded this value -> \""+result+ "\" of temperature");
         return result;
     }
 
@@ -154,7 +154,7 @@ public class web_API {
         }
         //result = result.substring(result.indexOf(":") + 1, result.indexOf("deg;C") - 1);
         //log.fatal(result);
-        log.debug("Finded value this -> \""+result+ "\" on page");
+        log.debug("Finded this value -> \""+result+ "\" of humidity");
         return result;
     }
 
@@ -194,7 +194,7 @@ public class web_API {
         //Searching for temp value
         result = result.substring(result.indexOf("hPa") - 6, result.indexOf("hPa"));
         //result = result.substring(result.indexOf(":") + 1, result.indexOf("deg;C") - 1);
-        log.debug("Finded value this -> \""+result+ "\" on page");
+        log.debug("Finded this value -> \""+result+ "\" of preasure");
         return result;
     }
 }

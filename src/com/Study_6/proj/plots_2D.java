@@ -1,5 +1,11 @@
 package com.Study_6.proj;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -8,11 +14,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class plots_2D extends JPanel {
+    private static Logger log = LogManager.getLogger();
     //initialize coordinates
     public List<Measurement> mes = new LinkedList<Measurement>();
+    public String title = new String();
     private int marg = 10;
 
     protected void paintComponent(Graphics grf){
+        Configurator.initialize(new DefaultConfiguration());
+        Configurator.setRootLevel(Level.DEBUG);
         //create instance of the Graphics to use its methods
         super.paintComponent(grf);
         Graphics2D graph = (Graphics2D)grf;
@@ -36,9 +46,16 @@ public class plots_2D extends JPanel {
         graph.setPaint(Color.RED);
 
         // set points to the graph
+        double x1;
+        double y1;
         for(int i=0; i<mes.size(); i++){
-            double x1 = marg+i*x;
-            double y1 = height-marg-scale*Double.parseDouble(mes.get(i).getValue());
+            x1 = marg+i*x;
+            y1 = height-marg-scale*Double.parseDouble(mes.get(i).getValue());
+/*            if(height-marg-scale*Double.parseDouble(mes.get(i).getValue()) > 850){
+                y1 =Double.valueOf((String.valueOf(height-marg-scale*Double.parseDouble(mes.get(i).getValue()))).substring(2));
+            }else{
+                y1 = height-marg-scale*Double.parseDouble(mes.get(i).getValue());
+            }*/
             graph.fill(new Ellipse2D.Double(x1-2, y1-2, 4, 4));
         }
     }
@@ -51,6 +68,6 @@ public class plots_2D extends JPanel {
                 max = Double.parseDouble(mes.get(i).getValue());
 
         }
-        return max;
+        return max*1.5;
     }
 }
