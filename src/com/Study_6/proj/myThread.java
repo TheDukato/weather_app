@@ -7,13 +7,12 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 
 public class myThread extends Thread{
-    private static Logger log = LogManager.getLogger();
+    private static Logger log = LogManager.getLogger("myLogger");
     public static int currDelayTime;
     public static int enable =0;
 
     public void insert2DB_from_web_temperaure_Thread(String nameOfTable,int delayTime) {
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
+
 
         currDelayTime = delayTime;
         Runnable r = () -> {
@@ -38,9 +37,6 @@ public class myThread extends Thread{
         t.start();
     }
     public void insert2DB_from_web_preasure_Thread(String nameOfTable,int delayTime) {
-
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
 
         currDelayTime = delayTime;
         Runnable r = () -> {
@@ -67,8 +63,6 @@ public class myThread extends Thread{
 
     }
     public void insert2DB_from_web_humidity_Thread(String nameOfTable,int delayTime) {
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
 
         currDelayTime = delayTime;
         Runnable r = () -> {
@@ -95,8 +89,6 @@ public class myThread extends Thread{
         t.start();
     }
     public void runGUIThread() {
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
 
         Runnable r = () -> {
                 GUI.mainMenu();

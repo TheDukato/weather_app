@@ -9,13 +9,11 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class web_API {
 
-    private static Logger log = LogManager.getLogger();
+    private static Logger log = LogManager.getLogger("myLogger");
 
     /*messyMethod
      *TODO
@@ -23,76 +21,36 @@ public class web_API {
      * 2)Querry for humidity
      * 3)Querry for preasure
      * 4)Threads pooling +++
+     * 5)Shouldn't be close or try with resources?(sc i URL)
+     * 6)42 linie object class Scanner "sc" is null when didn't have internet
      */
-/*    public static String messyMethod() {
-
-        //Instantiating the URL class
-        URL url = null;
-        try {
-            url = new URL("http://meteo.kdwd.webd.pl/index.php");
-        } catch (
-                MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        //String dat = "";
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        //LocalDateTime nowdate = LocalDateTime.now();
-        //dat = LocalDateTime.now().toString();
-        ///////
-        //System.out.println("Hello: "+ dat);
-        //////
-
-        while (true) {
-            //if (dat != LocalDateTime.now().toString()) {
-            //Retrieving the contents of the specified page
-            Scanner sc = null;
-            try {
-                sc = new Scanner(url.openStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //Instantiating the StringBuffer class to hold the result
-            StringBuffer sb = new StringBuffer();
-            while (sc.hasNext()) {
-                sb.append(sc.next());
-                //System.out.println(sc.next());
-            }
-            //Retrieving the String from the String Buffer object
-            String result = sb.toString();
-            //Removing the HTML tags
-            result = result.replaceAll("<[^>]*>", "");
-
-            //Searching for temp value
-            result = result.substring(result.indexOf("Aktualizacja:&nbsp;") + 50, result.indexOf("hrWilgotno") - 7);
-            result = result.substring(result.indexOf(":") + 1, result.indexOf("deg;C") - 1);
-            return result;
-            //}
-        }
-    }*/
 
     public static String current_temperature() {
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
-        /*
-        *TODO
-        * 1)Shouldn't be close or try with resources?(sc i URL)
-         */
         URL url = null;
         try {
             url = new URL("http://meteo.kdwd.webd.pl/index.php");
         } catch (MalformedURLException e) {
             //e.printStackTrace();
             log.error("Failure while connecting to web site");
+            log.fatal(e);
         }
         log.debug("Successful while connecting to web site");
+        /************
+         * HANDLING ERROR
+         **/
         Scanner sc = null;
-        try {
-            sc = new Scanner(url.openStream());
-        } catch (IOException e) {
-            log.error("Failure while retrieving content of website");
-            //e.printStackTrace();
+        while(sc==null){
+            try {
+                sc = new Scanner(url.openStream());
+            } catch (IOException e) {
+                log.error("Failure while retrieving content of website \nTrying to reconnect");
+                log.fatal(e);
+                //e.printStackTrace();
+            }
         }
+        /**
+         * HANDLING ERROR
+         ************/
         log.debug("Successful retrieving content of website");
         //Instantiating the StringBuffer class to hold the result
         StringBuffer sb = new StringBuffer();
@@ -112,12 +70,6 @@ public class web_API {
     }
 
     public static String current_humidity() {
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
-        /*
-         *TODO
-         * 1)Shouldn't be close or try with resources?(sc i URL)
-         */
         URL url = null;
         try {
             url = new URL("http://meteo.kdwd.webd.pl/index.php");
@@ -126,13 +78,22 @@ public class web_API {
             log.error("Failure while connecting to web site");
         }
         log.debug("Successful while connecting to web site");
+        /************
+         * HANDLING ERROR
+         **/
         Scanner sc = null;
-        try {
-            sc = new Scanner(url.openStream());
-        } catch (IOException e) {
-            log.error("Failure while retrieving content of website");
-            //e.printStackTrace();
+        while(sc==null){
+            try {
+                sc = new Scanner(url.openStream());
+            } catch (IOException e) {
+                log.error("Failure while retrieving content of website \nTrying to reconnect");
+                log.fatal(e);
+                //e.printStackTrace();
+            }
         }
+        /**
+         * HANDLING ERROR
+         ************/
         log.debug("Successful retrieving content of website");
         //Instantiating the StringBuffer class to hold the result
         StringBuffer sb = new StringBuffer();
@@ -159,12 +120,6 @@ public class web_API {
     }
 
     public static String current_preasure() {
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
-        /*
-         *TODO
-         * 1)Shouldn't be close or try with resources?(sc i URL)
-         */
         URL url = null;
         try {
             url = new URL("http://meteo.kdwd.webd.pl/index.php");
@@ -173,13 +128,22 @@ public class web_API {
             log.error("Failure while connecting to web site");
         }
         log.debug("Successful while connecting to web site");
+        /************
+         * HANDLING ERROR
+         **/
         Scanner sc = null;
-        try {
-            sc = new Scanner(url.openStream());
-        } catch (IOException e) {
-            log.error("Failure while retrieving content of website");
-            //e.printStackTrace();
+        while(sc==null){
+            try {
+                sc = new Scanner(url.openStream());
+            } catch (IOException e) {
+                log.error("Failure while retrieving content of website \nTrying to reconnect");
+                log.fatal(e);
+                //e.printStackTrace();
+            }
         }
+        /**
+         * HANDLING ERROR
+         ************/
         log.debug("Successful retrieving content of website");
         //Instantiating the StringBuffer class to hold the result
         StringBuffer sb = new StringBuffer();

@@ -1,12 +1,11 @@
 package com.Study_6.proj;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class DB_API {
     private static Connection conn;
     private static Statement stat;
 
-    private static Logger log = LogManager.getLogger();
+    private static Logger log = LogManager.getLogger("myLogger");
 
     /*conn2DB
     * TODO:
@@ -25,26 +24,25 @@ public class DB_API {
      */
 
     public static boolean conn2DB() {
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
-
         try {
             Class.forName(DB_API.DRIVER);
         } catch (ClassNotFoundException e) {
             log.error("Failure when loading JDBC driver");
+            log.fatal(e);
             //e.printStackTrace();
             return false;
         }
-        log.debug("JDBC driver load succesfull");
+        log.info("JDBC driver load succesfull");
         try {
             conn = DriverManager.getConnection(DB_URL);
             stat = conn.createStatement();
         } catch (SQLException e) {
             log.warn("Problem with connection with DB " + DB_URL);
+            log.fatal(e);
             //e.printStackTrace();
             return false;
         }
-        log.debug("Connected to DB " + DB_URL);
+        log.info("Connected to DB " + DB_URL);
         return true;
     }
 
@@ -52,9 +50,6 @@ public class DB_API {
     * Querry that initial new historian structures
      */
     static boolean createQuerry(String target) {
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
-
         String querry =
                 "CREATE TABLE IF NOT EXISTS "+ target +
                         "(id_mes INTEGER PRIMARY KEY AUTOINCREMENT,"+
@@ -62,13 +57,12 @@ public class DB_API {
                         "valueOf VARCHAR(5),"+
                         "unitOf VARCHAR(5)"+
                         ")";
-        log.debug("Create new table "+target+" with that querry ///" + querry);
+        log.trace("Create new table "+target+" with that querry ///" + querry);
         try {
-            log.debug("Before exec");
             stat.execute(querry);
-            log.debug("After exec");
         } catch (SQLException e) {
             log.error("Failure when created new table");
+            log.fatal(e);
             //e.printStackTrace();
             return false;
         }
@@ -79,28 +73,34 @@ public class DB_API {
     *
      */
     static boolean insertQuerry(String target,String value){
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
-
-        try {
-            PreparedStatement prepStmt = conn.prepareStatement("insert into "+ target +"(valueOf) values (?);");
-            log.debug("Insert into querry: " + prepStmt);
-            prepStmt.setString(1, value);
-            prepStmt.execute();
-        } catch (SQLException e){
-            log.warn("Unable to insert value to DB: " + target);
-            //e.printStackTrace();
-            return false;
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        /************
+         * HANDLING ERROR
+         **/
+        if(value != null) {
+            try {
+                PreparedStatement prepStmt = conn.prepareStatement("insert into " + target + "(valueOf,timestampOf) values (?,?);");
+                log.debug("Insert into querry: " + prepStmt);
+                prepStmt.setString(1, value);
+                prepStmt.setString(2, dtf.format(now));
+                prepStmt.execute();
+            } catch (SQLException e) {
+                log.warn("Unable to insert value to DB: " + target);
+                //e.printStackTrace();
+                return false;
+            }
+            log.info("Successful insertion");
         }
-        log.debug("Successful insertion");
+        /**
+         * HANDLING ERROR
+         ************/
         return true;
     }
     /*selectQuerry
      *
      */
     static List<Measurement> selectQuerry(String target){
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
 
         List<Measurement> mes = new LinkedList<Measurement>();
         int i = 0;
@@ -109,19 +109,19 @@ public class DB_API {
             log.debug("Starting select querry for table " + target);
             String time,value;
             while(result.next()) {
-                time = result.getString("timestampOf");
+                //time = result.getString("timestampOf");
                 value = result.getString("valueOf");
                 mes.add(new Measurement(value));
-                //System.out.println(mes.get(i).getValue());
                 i++;
             }
         } catch (SQLException e) {
             log.warn("Unable to processed select querry");
+            log.fatal(e);
             //e.printStackTrace();
             return null;
         }
-        log.debug("Select querry processed");
-        log.trace("Returned value" + mes);
+        log.info("Select querry processed");
+        //log.trace("Returned value" + mes);
         return mes;
     }
 }

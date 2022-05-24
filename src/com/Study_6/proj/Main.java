@@ -1,39 +1,27 @@
 package com.Study_6.proj;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class Main {
-    //private static final Logger log = LogManager.getLogger(Main.class);
-    //private static final Logger log = LogManager.getLogger("HelloWorld");
-    //private static final Logger log = LogManager.getLogger();
-
-    private static Logger log = LogManager.getLogger();
+    private static Logger log = LogManager.getLogger("myLogger");
 
     public static void main(String[] args) {
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
+/*        //String(double)
+        List<Measurement> mes = new LinkedList<Measurement>();
+        Measurement meas = new Measurement("12345");
+        mes.add(meas);
+        //System.out.println(Character.codePointAt(mes.get(0).getValue().substring(0,1)));
+        System.out.println(Character.isDigit(mes.get(0).getValue().charAt(1)));
 
+        //mes.get(0).getValue().substring(0,0);
+        //System.out.println(Character.isDigit(Integer.parseInt(mes.get(0).getValue().substring(0,1))));*/
 
         myThread myMyThreadGUI = new myThread();
-
-        myThread myMyThread1 = new myThread();
-        myThread myMyThread2 = new myThread();
-        myThread myMyThread3 = new myThread();
-
-        log.debug("Run insertion myThread for table " + "temperature_1");
-        myMyThread1.insert2DB_from_web_temperaure_Thread("temperature_1",10000);
-
-        log.debug("Run insertion myThread for table " + "humidity_1");
-        myMyThread2.insert2DB_from_web_humidity_Thread("humidity_1",10000);
-
-        log.debug("Run insertion myThread for table " + "preasure_1");
-        myMyThread3.insert2DB_from_web_preasure_Thread("preasure_1",10000);
-
         log.debug("Run GUI myThread");
         myMyThreadGUI.runGUIThread();
     }

@@ -14,15 +14,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class plots_2D extends JPanel {
-    private static Logger log = LogManager.getLogger();
+    private static Logger log = LogManager.getLogger("myLogger");
     //initialize coordinates
     public List<Measurement> mes = new LinkedList<Measurement>();
     public String title = new String();
     private int marg = 10;
 
     protected void paintComponent(Graphics grf){
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.DEBUG);
         //create instance of the Graphics to use its methods
         super.paintComponent(grf);
         Graphics2D graph = (Graphics2D)grf;
@@ -39,24 +37,32 @@ public class plots_2D extends JPanel {
         graph.draw(new Line2D.Double(marg, height-marg, width-marg, height-marg));
 
         //find value of x and scale to plot points
-        double x = (double)(width-2*marg)/(mes.size()-1);
-        double scale = (double)(height-marg)/getMax();
+        //&& Character.isDigit(mes.indexOf(0))
+        if(mes!=null) {
+            if (Character.isDigit(mes.get(0).getValue().charAt(0))){
+            double x = (double) (width - 2 * marg) / (mes.size() - 1);
+            double scale = (double) (height - marg) / getMax();
 
-        //set color for points
-        graph.setPaint(Color.RED);
+            //set color for points
+            graph.setPaint(Color.RED);
 
-        // set points to the graph
-        double x1;
-        double y1;
-        for(int i=0; i<mes.size(); i++){
-            x1 = marg+i*x;
-            y1 = height-marg-scale*Double.parseDouble(mes.get(i).getValue());
+            // set points to the graph
+            double x1;
+            double y1;
+            for (int i = 0; i < mes.size(); i++) {
+                x1 = marg + i * x;
+                y1 = height - marg - scale * Double.parseDouble(mes.get(i).getValue());
 /*            if(height-marg-scale*Double.parseDouble(mes.get(i).getValue()) > 850){
                 y1 =Double.valueOf((String.valueOf(height-marg-scale*Double.parseDouble(mes.get(i).getValue()))).substring(2));
             }else{
                 y1 = height-marg-scale*Double.parseDouble(mes.get(i).getValue());
             }*/
-            graph.fill(new Ellipse2D.Double(x1-2, y1-2, 4, 4));
+                graph.fill(new Ellipse2D.Double(x1 - 2, y1 - 2, 4, 4));
+                log.trace("Put point on chart");
+            }
+            }
+        }else{
+            log.fatal("Value from DB has critical value");
         }
     }
 
